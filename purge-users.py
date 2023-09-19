@@ -12,6 +12,9 @@ parser.add_argument("domain", nargs="?", help="Process a specific domain")
 parser.add_argument("-d","--dry-run", action="store_true", help="Print users instead of deleting them")
 args = parser.parse_args()
 
+if args.dry_run:
+    print("================ DRY RUN! No changes will be made =================")
+
 # Get the API key from environment variable or prompt for it
 api_key = os.environ.get("MXG_API_KEY")
 if not api_key:
