@@ -109,12 +109,13 @@ foreach ($d in $domainList) {
                 # Delete the user
                 $deleteUserUrl = "$baseUrl/users/$userEmail"
                 $deleteUserResponse = Invoke-APIRequest -url $deleteUserUrl -method 'DELETE'
-                if ($deleteUserResponse -eq $null) {
+                if ($deleteUserResponse -eq "") {
                     Write-Host "$userEmail has been deleted."
                     $userCount++
                     $domainDict[$domainName] = 1
                 } else {
                     Write-Host "Failed to delete user $userEmail."
+                    Write-Host $deleteUserResponse
                 }
             }
         }
