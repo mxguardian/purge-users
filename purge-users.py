@@ -3,6 +3,7 @@ import sys
 import requests
 import argparse
 import os
+from datetime import datetime, timedelta, timezone
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -25,7 +26,9 @@ if not api_key:
         sys.exit()
 
 # Set API base URL
-base_url = "https://secure.mxguardian.net/api/v1"
+base_url = os.environ.get("MXG_API_URL")
+if not base_url:
+    base_url = "https://secure.mxguardian.net/api/v1"
 
 # Verify server certificate (replace with path to CA bundle if using self-signed certificate)
 verify = True
@@ -37,7 +40,8 @@ domain_list_url = f"{base_url}/domains"
 user_list_url = f"{base_url}/domains/{{domain}}/users"
 
 # Endpoint for retrieving user messages (pagesize=1 to limit results)
-messages_url = f"{base_url}/users/{{user}}/inbound?date_range=30d&pagesize=1"
+afterDate = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat(timespec='seconds')
+messages_url = f"{base_url}/users/{{user}}/messages?mode=I&pagesize=1&filter=after:{afterDate}"
 
 # Endpoint for deleting a user
 delete_user_url = f"{base_url}/users/{{user_email}}"

@@ -42,9 +42,10 @@ if (-not $baseUrl) {
 	$baseUrl = "https://secure.mxguardian.net/api/v1"
 }
 
-# Initialize count variables
+# Initialize variables
 $userCount = 0
 $domainDict = @{}
+$afterDate = (Get-Date).AddDays(-30).ToString("yyyy-MM-ddTHH:mm:ssK")
 
 # Function to make API calls
 function Invoke-APIRequest {
@@ -96,7 +97,7 @@ foreach ($d in $domainList) {
         $userEmail = $user.user_email
 
         # Get the number of messages for the current user in the last 30 days
-        $messagesUrl = "$baseUrl/users/$userEmail/inbound?date_range=30d&pagesize=1"
+        $messagesUrl = "$baseUrl/users/$userEmail/messages?mode=I&pagesize=1&filter=after:$afterDate"
         $messagesResponse = Invoke-APIRequest -url $messagesUrl
         $messageCount = $messagesResponse.count
 
